@@ -62,4 +62,30 @@ The index.html within docker would be changed to:
     <body><script id="fenv">window.env = {REACT_APP_SOMETHING: 'else',};</script>
     </body>
 </html>
+```
 
+## Usage from within create-react-app / dotenv
+
+Example typescript:
+
+```ts
+function getEnv(envName: string, default1: string, default2: string): string {
+  var wnd = window as any;
+
+  // see if we have it in the window object
+  if (wnd != null && wnd.env != null && wnd.env[envName] != null) return wnd.env[envName];
+  // in environment variables?
+  if (default1 != null) return default1;
+
+  // fall back to user specified default value
+  return default2;
+}
+
+const env = {
+  apiUrl: getEnv('REACT_APP_API_URL', process.env.REACT_APP_API_URL!, ""),
+  timeout: getEnv('REACT_APP_API_TIMEOUT', process.env.REACT_APP_TIMEOUT!, "5000"),
+  stage: getEnv('REACT_APP_API_URL_STAGE', process.env.REACT_APP_STAGE!, ""),
+}
+
+export { env };
+```
