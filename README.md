@@ -70,10 +70,12 @@ Example typescript:
 
 ```ts
 function getEnv(envName: string, default1: string, default2: string): string {
+
   var wnd = window as any;
 
   // see if we have it in the window object
   if (wnd != null && wnd.env != null && wnd.env[envName] != null) return wnd.env[envName];
+
   // in environment variables?
   if (default1 != null) return default1;
 
