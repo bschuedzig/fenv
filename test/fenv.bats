@@ -9,7 +9,7 @@ function setup() {
 
 @test "correctly replaces variables" {
 
-    TEST_STR="<body><script id=\"fenv\">window.env = {REACT_APP_TEST: 'some text',}};</script>"
+    TEST_STR="<body><script id=\"fenv\">window.env = {REACT_APP_TEST: 'some text',};</script>"
 
     # use env -i to wipe out other environment variables
     env -i \

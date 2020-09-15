@@ -13,7 +13,7 @@ FILE="${1:-}"
 
 # find all variables with REACT_APP_ prefix
 # shellcheck disable=SC2016
-IFS=$'\r\n' GLOBIGNORE='*' command eval 'VARS=($(env | grep "^REACT_APP_"))'
+IFS=$'\r\n' GLOBIGNORE='*' command eval 'VARS=($(env | grep "^REACT_APP_" || echo ""))'
 
 # generate JSON object
 JSON_OBJECT=$(
@@ -37,9 +37,7 @@ JSON_OBJECT=$(
 # enclose it into script tag
 SCRIPT_TAG=$(
     printf '<script id="fenv">'
-    printf 'window.env = '
-    printf "%s" "$JSON_OBJECT"
-    printf '};'
+    printf 'window.env = %s;' "$JSON_OBJECT"
     printf '</script>'
 )
 
@@ -56,3 +54,11 @@ awk \
     "$FILE" >"$FILE.temp"
 
 mv "$FILE.temp" "$FILE"
+
+# do we have additional parameters?
+# replace execution with that (for docker usage)
+
+if [[ "$#" -ge 2 ]]; then
+    shift
+    exec "$@"
+fi
