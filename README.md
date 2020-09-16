@@ -32,6 +32,7 @@ COPY /build/ /usr/share/nginx/html/
 COPY vendor/fenv.sh /usr/local/bin
 
 ENTRYPOINT ["fenv.sh", "/usr/share/nginx/html/index.html"]
+CMD ["nginx", "-g", "daemon off;"]
 ```
 
 ### Test
