@@ -1,16 +1,10 @@
-FROM alpine:latest
-WORKDIR /app
+FROM nginx:1.21.5-alpine
 
 # alpine does not come with bash by default
 RUN apk add --no-cache bash
 
-# your payload
+WORKDIR /usr/share/nginx/html
+
+COPY ./fenv.sh /docker-entrypoint.d/99-fenv.sh
+
 COPY /app/ ./
-
-# the custom scripts
-COPY fenv.sh /usr/local/bin
-
-ENTRYPOINT ["fenv.sh", "/app/index.html"]
-
-# usually this would be 'nginx' or something alike
-CMD ["/app/program.sh"]

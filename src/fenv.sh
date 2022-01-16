@@ -1,15 +1,20 @@
 #!/bin/bash
 set -euo pipefail
 
+TARGET_FILE="/usr/share/nginx/html/index.html"
+
+if [[ -n "${1:-}" ]]; then
+    TARGET_FILE="$1"
+    if [[ ! -f "$TARGET_FILE" ]]; then
+        echo "Cannot find file $TARGET_FILE"
+        exit 2
+    fi
+fi
+
+# The mark will be replaced with MARK + <script tag>
 REPLACE_MARK="<body>"
 
-# Make sure we are in the directory of this script
-cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1
-
-# Parameter validation
-FILE="${1:-}"
-[[ -z "$FILE" ]] && echo "Please specify the html files" && exit 1
-[[ ! -f "$FILE" ]] && echo "$FILE does not exist" && exit 1
+[[ ! -f "$TARGET_FILE" ]] && echo "$TARGET_FILE does not exist" && exit 1
 
 # find all variables with REACT_APP_ prefix
 # shellcheck disable=SC2016
@@ -51,14 +56,6 @@ awk \
     -v REPLACE_MARK="$REPLACE_MARK" \
     -v REPLACEMENT="$REPLACEMENT" \
     '{ gsub(REPLACE_MARK, REPLACEMENT); print }' \
-    "$FILE" >"$FILE.temp"
+    "$TARGET_FILE" >"$TARGET_FILE.temp"
 
-mv "$FILE.temp" "$FILE"
-
-# do we have additional parameters?
-# replace execution with that (for docker usage)
-
-if [[ "$#" -ge 2 ]]; then
-    shift
-    exec "$@"
-fi
+mv "$TARGET_FILE.temp" "$TARGET_FILE"
